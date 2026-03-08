@@ -1,0 +1,51 @@
+# Flink Configuration
+# ==================
+
+# The hostname used by the JobManager and TaskManager to communicate with each other.
+# If this address is not reachable, the tasks will fail to register with the JobManager.
+jobmanager.rpc.address: flink-jobmanager
+jobmanager.rpc.port: 6123
+
+# The port where the JobManager's internal actor system listens on.
+# The JobManager actor system is used for in-between operator communication
+jobmanager.bind-host: 0.0.0.0
+jobmanager.web.address: 0.0.0.0
+jobmanager.web.port: 8081
+
+# The TaskManager's hostname
+taskmanager.bind-host: 0.0.0.0
+# Note: Do not set taskmanager.host to localhost in Docker!
+# Each TaskManager will automatically use its container hostname
+
+# Total number of task slots per TaskManager instance
+taskmanager.numberOfTaskSlots: 4
+
+# The memory JVM can allocate for TaskManager
+taskmanager.memory.process.size: 4gb
+jobmanager.memory.process.size: 2gb
+# # Increase off-heap (direct) memory for TaskManager to avoid OutOfMemoryError
+taskmanager.memory.task.off-heap.size: 1gb
+
+# Parallelism
+parallelism.default: 2
+
+# Checkpointing and recovery
+state.backend: rocksdb
+state.checkpoints.dir: file:///var/flink/checkpoints
+state.savepoints.dir: file:///var/flink/savepoints
+state.backend.rocksdb.local-directories: /var/flink/rocksdb
+
+# Rest endpoint for job submissions
+rest.bind-address: 0.0.0.0
+rest.address: flink-jobmanager
+rest.port: 8081
+
+# Network timeout
+taskmanager.network.timeout: 60 s
+blob.server.port: 6124
+query.server.port: 6125
+
+# Restart strategy
+restart-strategy: fixed-delay
+restart-strategy.fixed-delay.attempts: 3
+restart-strategy.fixed-delay.delay: 10 s

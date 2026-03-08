@@ -1,0 +1,440 @@
+services:
+    # ------------ CONTROLLERS ----------------
+    controller-1:
+        image: apache/kafka:4.1.0
+        container_name: controller-1
+        ports:
+            - "9093:9093"
+        environment:
+            KAFKA_NODE_ID: 1
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT'
+            KAFKA_LISTENERS: 'CONTROLLER://0.0.0.0:9093'
+            KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+            KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+            KAFKA_CONTROLLER_QUORUM_VOTERS: '1@controller-1:9093,2@controller-2:9094,3@controller-3:9095'
+            KAFKA_PROCESS_ROLES: 'controller'
+
+    controller-2:
+        image: apache/kafka:4.1.0
+        container_name: controller-2
+        ports:
+            - "9094:9094"
+        environment:
+            KAFKA_NODE_ID: 2
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT'
+            KAFKA_LISTENERS: 'CONTROLLER://0.0.0.0:9094'
+            KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+            KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+            KAFKA_CONTROLLER_QUORUM_VOTERS: '1@controller-1:9093,2@controller-2:9094,3@controller-3:9095'
+            KAFKA_PROCESS_ROLES: 'controller'
+
+    controller-3:
+        image: apache/kafka:4.1.0
+        container_name: controller-3
+        ports:
+            - "9095:9095"
+        environment:
+            KAFKA_NODE_ID: 3
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT'
+            KAFKA_LISTENERS: 'CONTROLLER://0.0.0.0:9095'
+            KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+            KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+            KAFKA_CONTROLLER_QUORUM_VOTERS: '1@controller-1:9093,2@controller-2:9094,3@controller-3:9095'
+            KAFKA_PROCESS_ROLES: 'controller'
+
+    # ------------ BROKERS ----------------
+    broker-1:
+        image: apache/kafka:4.1.0
+        container_name: broker-1
+        depends_on: [ controller-1, controller-2, controller-3 ]
+        ports:
+            - "9092:9092"
+            - "29092:29092"
+        user: "root"
+        environment:
+            KAFKA_NODE_ID: 4
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+            KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092'
+            KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker-1:29092,PLAINTEXT_HOST://localhost:9092'
+            KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+            KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+            KAFKA_CONTROLLER_QUORUM_VOTERS: '1@controller-1:9093,2@controller-2:9094,3@controller-3:9095'
+            KAFKA_PROCESS_ROLES: 'broker'
+            KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+            KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+            KAFKA_NUM_PARTITIONS: 3
+            KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+            KAFKA_REPLICA_FETCH_MAX_WAIT_MS: 500
+        volumes:
+            - kafka-logs-1:/tmp/kraft-combined-logs
+
+    broker-2:
+        image: apache/kafka:4.1.0
+        container_name: broker-2
+        depends_on: [ controller-1, controller-2, controller-3 ]
+        ports:
+            - "9192:9192"
+            - "29192:29192"
+        user: "root"
+        environment:
+            KAFKA_NODE_ID: 5
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+            KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29192,PLAINTEXT_HOST://0.0.0.0:9192'
+            KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker-2:29192,PLAINTEXT_HOST://localhost:9192'
+            KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+            KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+            KAFKA_CONTROLLER_QUORUM_VOTERS: '1@controller-1:9093,2@controller-2:9094,3@controller-3:9095'
+            KAFKA_PROCESS_ROLES: 'broker'
+            KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+            KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+            KAFKA_NUM_PARTITIONS: 3
+            KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+            KAFKA_REPLICA_FETCH_MAX_WAIT_MS: 500
+        volumes:
+            - kafka-logs-2:/tmp/kraft-combined-logs
+
+    broker-3:
+        image: apache/kafka:4.1.0
+        container_name: broker-3
+        depends_on: [ controller-1, controller-2, controller-3 ]
+        ports:
+            - "9292:9292"
+            - "29292:29292"
+        user: "root"
+        environment:
+            KAFKA_NODE_ID: 6
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+            KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29292,PLAINTEXT_HOST://0.0.0.0:9292'
+            KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker-3:29292,PLAINTEXT_HOST://localhost:9292'
+            KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+            KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+            KAFKA_CONTROLLER_QUORUM_VOTERS: '1@controller-1:9093,2@controller-2:9094,3@controller-3:9095'
+            KAFKA_PROCESS_ROLES: 'broker'
+            KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+            KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+            KAFKA_NUM_PARTITIONS: 3
+            KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+            KAFKA_REPLICA_FETCH_MAX_WAIT_MS: 500
+        volumes:
+            - kafka-logs-3:/tmp/kraft-combined-logs
+
+    # ------------ PRODUCERS (Simulators implemented with Python) -------------
+    # Dockerfile for simulators
+    simulator-base: &simulator-base
+        build:
+            context: ./simulator
+            dockerfile: Dockerfile
+        depends_on: 
+            - broker-1
+            - broker-2 
+            - broker-3
+        environment:
+            - KAFKA_BROKERS=broker-1:29092,broker-2:29192,broker-3:29292
+            - PLANT_CONFIG_PATH=/app/config/plant_config.json
+        networks:
+            - default
+        volumes:
+            - ./simulator:/app
+            - ./config:/app/config:ro
+        working_dir: /app
+        restart: "no"
+        command: ["tail", "-f", "/dev/null"]
+
+    # PV Data Simulator Default Instance - Real-time simulation
+    pv-simulator-default:
+        <<: *simulator-base
+        container_name: pv-simulator-default
+        command: python src/cli.py --speed x1 
+
+    # PV Data Simulator Instance 1 - Fast simulation
+    pv-simulator-fast:
+        <<: *simulator-base
+        container_name: pv-simulator-fast
+        command: python src/cli.py --speed x120
+
+    # PV Data Simulator Instance 3 - High failure scenario
+    pv-simulator-high-failure:
+        <<: *simulator-base
+        container_name: pv-simulator-high-failure
+        command: python src/cli.py --speed x1 --inverter-failure-prob 15.0 --bad-connection-prob 20.0
+
+    # PV Data Simulator Instance 4 - High failure scenario fast
+    pv-simulator-high-failure-fast:
+        <<: *simulator-base
+        container_name: pv-simulator-high-failure-fast
+        command: python src/cli.py --speed x120 --inverter-failure-prob 10.0 --bad-connection-prob 0.0
+
+
+    # ------------ FLINK STREAM PROCESSING ----------------
+    # Flink JobManager
+    flink-jobmanager:
+        build:
+            context: ./flink
+            dockerfile: Dockerfile
+        image: pyflink:latest
+        container_name: flink-jobmanager
+        command: jobmanager
+        ports:
+            - "6123:6123"
+            - "8081:8081"
+        environment:
+            - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+            - DB_HOST=${DB_HOST:-postgres}
+            - DB_PORT=${DB_PORT:-5432}
+            - DB_NAME=${DB_NAME:-solarxai_medallion}
+            - DB_USER=${DB_USER:-solarxai}
+            - DB_PASSWORD=${DB_PASSWORD:-solarxai_password_123}
+        depends_on:
+            - broker-1
+            - broker-2
+            - broker-3
+        volumes:
+            - ./flink/jobs:/opt/flink/jobs
+            - ./flink/conf:/opt/flink/conf:/opt/flink/conf
+            - flink-jobmanager-logs:/opt/flink/log
+        networks:
+            - default
+        restart: unless-stopped
+
+    # Flink TaskManager 1
+    flink-taskmanager-1:
+        build:
+            context: ./flink
+            dockerfile: Dockerfile
+        image: pyflink:latest
+        container_name: flink-taskmanager-1
+        hostname: flink-taskmanager-1
+        command: taskmanager
+        ports:
+            - "6124:6124"
+        environment:
+            - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+            - TASK_MANAGER_HOST=flink-taskmanager-1
+            - TASK_MANAGER_NUMBER_OF_TASK_SLOTS=4
+            - DB_HOST=${DB_HOST:-postgres}
+            - DB_PORT=${DB_PORT:-5432}
+            - DB_NAME=${DB_NAME:-solarxai_medallion}
+            - DB_USER=${DB_USER:-solarxai}
+            - DB_PASSWORD=${DB_PASSWORD:-solarxai_password_123}
+        depends_on:
+            - flink-jobmanager
+            - postgres
+        volumes:
+            - ./flink/jobs:/opt/flink/jobs
+            - ./flink/conf:/opt/flink/conf
+            - flink-taskmanager-1-logs:/opt/flink/log
+        networks:
+            - default
+        restart: unless-stopped
+
+    # Flink TaskManager 2
+    flink-taskmanager-2:
+        build:
+            context: ./flink
+            dockerfile: Dockerfile
+        image: pyflink:latest
+        container_name: flink-taskmanager-2
+        hostname: flink-taskmanager-2
+        command: taskmanager
+        ports:
+            - "6125:6124"
+        environment:
+            - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+            - TASK_MANAGER_HOST=flink-taskmanager-2
+            - TASK_MANAGER_NUMBER_OF_TASK_SLOTS=4
+            - DB_HOST=${DB_HOST:-postgres}
+            - DB_PORT=${DB_PORT:-5432}
+            - DB_NAME=${DB_NAME:-solarxai_medallion}
+            - DB_USER=${DB_USER:-solarxai}
+            - DB_PASSWORD=${DB_PASSWORD:-solarxai_password_123}
+        depends_on:
+            - flink-jobmanager
+            - postgres
+        volumes:
+            - ./flink/jobs:/opt/flink/jobs
+            - ./flink/conf:/opt/flink/conf
+            - flink-taskmanager-2-logs:/opt/flink/log
+        networks:
+            - default
+        restart: unless-stopped
+
+    # Flink TaskManager 3
+    flink-taskmanager-3:
+        build:
+            context: ./flink
+            dockerfile: Dockerfile
+        image: pyflink:latest
+        container_name: flink-taskmanager-3
+        hostname: flink-taskmanager-3
+        command: taskmanager
+        ports:
+            - "6126:6124"
+        environment:
+            - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+            - TASK_MANAGER_HOST=flink-taskmanager-3
+            - TASK_MANAGER_NUMBER_OF_TASK_SLOTS=4
+            - DB_HOST=${DB_HOST:-postgres}
+            - DB_PORT=${DB_PORT:-5432}
+            - DB_NAME=${DB_NAME:-solarxai_medallion}
+            - DB_USER=${DB_USER:-solarxai}
+            - DB_PASSWORD=${DB_PASSWORD:-solarxai_password_123}
+        depends_on:
+            - flink-jobmanager
+            - postgres
+        volumes:
+            - ./flink/jobs:/opt/flink/jobs
+            - ./flink/conf:/opt/flink/conf
+            - flink-taskmanager-3-logs:/opt/flink/log
+        networks:
+            - default
+        restart: unless-stopped
+
+    # ------------ POSTGRES DATABASE (Medallion Architecture) ----------------
+    postgres:
+        image: postgres:16-alpine
+        container_name: solarxai-postgres
+        ports:
+            - "${DB_PORT:-5432}:5432"
+        environment:
+            POSTGRES_USER: ${DB_USER:-solarxai}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-solarxai_password_123}
+            POSTGRES_DB: ${DB_NAME:-solarxai_medallion}
+            PGDATA: /var/lib/postgresql/data/pgdata
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+            - ./postgres/init:/docker-entrypoint-initdb.d:ro
+        networks:
+            - default
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-solarxai} -d ${DB_NAME:-solarxai_medallion}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    # Database seeder - seeds dimension tables from plant_config.json
+    db-seeder:
+        image: python:3.11-slim
+        container_name: solarxai-db-seeder
+        depends_on:
+            postgres:
+                condition: service_healthy
+        environment:
+            - DB_HOST=postgres
+            - DB_PORT=5432
+            - DB_NAME=${DB_NAME:-solarxai_medallion}
+            - DB_USER=${DB_USER:-solarxai}
+            - DB_PASSWORD=${DB_PASSWORD:-solarxai_password_123}
+            - PLANT_CONFIG_PATH=/config/plant_config.json
+        volumes:
+            - ./config:/config:ro
+            - ./postgres/scripts:/scripts:ro
+        networks:
+            - default
+        restart: "no"
+        command: >
+            sh -c "pip install --quiet psycopg2-binary && python /scripts/seed_from_config.py"
+
+    # pgAdmin for database management (optional)
+    pgadmin:
+        image: dpage/pgadmin4:latest
+        container_name: solarxai-pgadmin
+        ports:
+            - "${PGADMIN_PORT:-5050}:80"
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@solarxai.com}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin_password}
+        depends_on:
+            - postgres
+        networks:
+            - default
+        restart: unless-stopped
+
+    # ------------ STREAMLIT DASHBOARD ----------------
+    streamlit-dashboard:
+        image: python:3.11-slim
+        container_name: streamlit-dashboard
+        ports:
+            - "8501:8501"
+        working_dir: /app
+        environment:
+            - DB_HOST=${DB_HOST:-postgres}
+            - DB_PORT=${DB_PORT:-5432}
+            - DB_NAME=${DB_NAME:-solarxai_medallion}
+            - DB_USER=${DB_USER:-solarxai}
+            - DB_PASSWORD=${DB_PASSWORD:-solarxai_password_123}
+        volumes:
+            - ./dashboard:/app
+        command: bash -c "pip install --quiet -r requirements.txt && streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0"
+        depends_on:
+            - postgres
+        networks:
+            - default
+        restart: unless-stopped
+
+    # ------------ INFERENCE ENGINE ----------------
+    inference-anomaly:
+        build:
+            context: ./mlflow/inference_engine
+            dockerfile: Dockerfile
+        container_name: inference-anomaly
+        restart: unless-stopped
+        volumes:
+            - ./mlflow/experiments:/mlflow-data
+        environment:
+            - MLFLOW_TRACKING_URI=sqlite:////mlflow-data/mlflow.db
+            - KAFKA_BROKERS=${KAFKA_BROKERS:-broker-1:29092,broker-2:29192,broker-3:29292}
+            - INFERENCE_TRIGGER_TOPIC=inference-trigger
+            - INFERENCE_WINDOW_SECONDS=${INFERENCE_ANOMALY_WINDOW:-60}
+            - DB_HOST=${DB_HOST:-postgres}
+            - DB_PORT=${DB_PORT:-5432}
+            - DB_NAME=${DB_NAME:-solarxai_medallion}
+            - DB_USER=${DB_USER:-solarxai}
+            - DB_PASSWORD=${DB_PASSWORD:-solarxai_password_123}
+            - DEVICE=cpu
+        depends_on:
+            postgres:
+                condition: service_healthy
+        networks:
+            - default
+        command: ["anomaly"]
+
+    inference-forecasting:
+        build:
+            context: ./mlflow/inference_engine
+            dockerfile: Dockerfile
+        container_name: inference-forecasting
+        restart: unless-stopped
+        volumes:
+            - ./mlflow/experiments:/mlflow-data
+        environment:
+            - MLFLOW_TRACKING_URI=sqlite:////mlflow-data/mlflow.db
+            - KAFKA_BROKERS=${KAFKA_BROKERS:-broker-1:29092,broker-2:29192,broker-3:29292}
+            - INFERENCE_TRIGGER_TOPIC=inference-trigger
+            - INFERENCE_WINDOW_SECONDS=${INFERENCE_FORECAST_WINDOW:-60}
+            - DB_HOST=${DB_HOST:-postgres}
+            - DB_PORT=${DB_PORT:-5432}
+            - DB_NAME=${DB_NAME:-solarxai_medallion}
+            - DB_USER=${DB_USER:-solarxai}
+            - DB_PASSWORD=${DB_PASSWORD:-solarxai_password_123}
+            - DEVICE=cpu
+        depends_on:
+            postgres:
+                condition: service_healthy
+        networks:
+            - default
+        command: ["forecasting"]
+
+networks:
+    default:
+        driver: bridge
+
+volumes:
+    flink-jobmanager-logs:
+    flink-taskmanager-1-logs:
+    flink-taskmanager-2-logs:
+    flink-taskmanager-3-logs:
+    kafka-logs-1:
+    kafka-logs-2:
+    kafka-logs-3:
+    postgres-data:

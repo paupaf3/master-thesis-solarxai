@@ -1,0 +1,140 @@
+{
+  "$schema": "plant_config_schema.json",
+  "version": "1.0.0",
+  "last_updated": "2026-01-19",
+  
+  "plant": {
+    "plant_id": "550e8400-e29b-41d4-a716-446655440000",
+    "plant_name": "SolarX Demo Plant",
+    "location": {
+      "latitude": 40.4168,
+      "longitude": -3.7038,
+      "timezone": "Europe/Madrid",
+      "altitude_m": 650
+    },
+    "commissioning_date": "2024-01-01",
+    "total_capacity_kwp": 1260.0,
+    "total_surface_m2": 1400.0,
+    "grid_connection": {
+      "voltage_nominal_v": 400,
+      "frequency_nominal_hz": 50,
+      "phases": 3
+    }
+  },
+
+  "inverter_groups": [
+    {
+      "group_id": "A",
+      "inverter_count": 4,
+      "inverter_ids": ["A0", "A1", "A2", "A3"]
+    },
+    {
+      "group_id": "B", 
+      "inverter_count": 4,
+      "inverter_ids": ["B0", "B1", "B2", "B3"]
+    },
+    {
+      "group_id": "C",
+      "inverter_count": 6,
+      "inverter_ids": ["C0", "C1", "C2", "C3", "C4", "C5"]
+    }
+  ],
+
+  "inverter_specs": {
+    "nominal_capacity_kw": 90.0,
+    "panel_surface_m2": 100.0,
+    "dc_side": {
+      "voltage_mpp_min_v": 600,
+      "voltage_mpp_max_v": 1000,
+      "voltage_nominal_v": 800,
+      "current_max_a": 150,
+      "strings_count": 12,
+      "panels_per_string": 20,
+      "panel_wp": 400
+    },
+    "ac_side": {
+      "voltage_nominal_v": 400,
+      "frequency_nominal_hz": 50,
+      "power_factor_nominal": 0.99
+    },
+    "efficiency": {
+      "dc_ac_nominal": 0.97,
+      "dc_ac_min_acceptable": 0.95,
+      "system_efficiency_range": [0.88, 0.92]
+    },
+    "thermal": {
+      "temp_coefficient_power_pct_per_c": -0.4,
+      "stc_temperature_c": 25.0,
+      "max_operating_temp_c": 60.0,
+      "thermal_sensitivity": [0.008, 0.012]
+    }
+  },
+
+  "poi_meter_specs": {
+    "meter_id": "POI_METER_01",
+    "meter_type": "bidirectional",
+    "measurement_points": {
+      "export_active_power": true,
+      "import_active_power": true,
+      "reactive_power": true,
+      "grid_voltage_l1_l2_l3": true,
+      "grid_frequency": true
+    },
+    "grid_voltage": {
+      "nominal_v": 400,
+      "tolerance_pct": 10
+    },
+    "power_capacity": {
+      "max_export_kw": 1300,
+      "max_import_kw": 500
+    }
+  },
+
+  "meteo_station_specs": {
+    "station_id": "METEO_01",
+    "sensors": {
+      "ambient_temperature": true,
+      "module_temperature": true,
+      "poa_irradiance": true,
+      "ghi_irradiance": false,
+      "wind_speed": true,
+      "wind_direction": true,
+      "humidity": true,
+      "barometric_pressure": false
+    }
+  },
+
+  "thresholds": {
+    "inverter": {
+      "efficiency_alert_min": 0.95,
+      "efficiency_warning_min": 0.93,
+      "temp_warning_c": 55.0,
+      "temp_critical_c": 65.0,
+      "freq_deviation_warning_hz": 0.5,
+      "freq_deviation_critical_hz": 1.0
+    },
+    "dc_diagnostics": {
+      "string_current_imbalance_pct": 10.0,
+      "voltage_deviation_pct": 5.0,
+      "min_power_for_efficiency_calc_kw": 1.0
+    },
+    "poi_meter": {
+      "voltage_deviation_warning_pct": 5.0,
+      "voltage_deviation_critical_pct": 10.0,
+      "power_factor_warning_min": 0.90,
+      "power_factor_critical_min": 0.85
+    }
+  },
+
+  "simulation": {
+    "string_failure": {
+      "enabled": true,
+      "affects_dc_current": true,
+      "current_reduction_per_string_pct": 8.33
+    },
+    "dc_voltage_variation": {
+      "irradiance_coefficient": 0.15,
+      "temperature_coefficient": -0.003
+    }
+  }
+}
